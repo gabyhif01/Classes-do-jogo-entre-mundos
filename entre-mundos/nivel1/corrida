@@ -1,0 +1,57 @@
+import random
+import time
+
+class Carro:
+  def __init__(self,nome, modelo, comprimento_pista):
+    self.nome = nome
+    self.velocidade = 0
+    self.modelo = modelo
+    self.comprimento_pista = comprimento_pista
+    self.posicao = 0
+
+  def mover(self):
+    self.posicao += 1
+    
+  def acelerar(self):
+    self.velocidade += random.randint(1,5)
+  
+  def frear(self):
+    self.velocidade -= random.randint(1,3)
+    if self.velocidade<0:
+      self.velocidade = 0
+
+  def pista(self):
+    pista = [' '] * self.comprimento_pista
+    pista[self.posicao] = "C"
+    pista = ''.join(pista)
+    print(f"{self.nome} ({self.modelo}): {pista}")
+
+class Obstaculo:
+  def __init__(self, comprimento_pista):
+    self.posicao = random.randint(1, comprimento_pista - 1)
+
+  def colidir(self, carro):
+    return self.posicao == carro.posicao
+
+  def corrida_com_obstaculos_e_chegada(self):
+    comprimento_pista = 50
+    linha_chegada = comprimento_pista - 1
+
+    modelos_carros = ["Carro A", "Carro B", "Carro C"]
+    modelo_escolhido = random.choice(modelos_carros)
+
+    carro = Carro("Meu Carro", modelo_escolhido, comprimento_pista)
+    obstaculos = [Obstaculo(comprimento_pista) for _ in range(5)]  
+
+    while carro.posicao < linha_chegada:
+        carro.pista()
+        carro.mover()
+
+        for obstaculo in obstaculos:
+          if obstaculo.colidir(carro):
+              print(f"{carro.nome} ({carro.modelo}) bateu no obstaculo!")
+              return
+
+        time.sleep(1)
+
+    print(f"{carro.nome} ({carro.modelo}) venceu a corrida!")
